@@ -4,317 +4,401 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Gradient Tester</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --discord-blurple: #5865f2;
-            --discord-green: #3ba55c;
-            --discord-dark: #2f3136;
-            --discord-darker: #202225;
-            --discord-text: #ffffff;
-            --discord-gray: #8e9297;
+            --discord-primary: #5865f2;
+            --discord-secondary: #3ba55c;
+            --discord-dark: #313338;
+            --discord-darker: #2b2d31;
+            --discord-darkest: #1e1f22;
+            --discord-text: #f2f3f5;
+            --discord-text-secondary: #b5bac1;
+            --discord-border: #3f4248;
+            --discord-success: #248046;
+            --discord-hover: #35373c;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         
         body {
-            background-color: var(--discord-darker);
+            background-color: var(--discord-darkest);
             color: var(--discord-text);
             line-height: 1.5;
-            padding: 20px;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
         .container {
+            width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+            background-color: var(--discord-darker);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        
+        .header {
             background-color: var(--discord-dark);
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--discord-border);
         }
         
         h1 {
-            color: var(--discord-text);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        h2 {
-            color: var(--discord-text);
-            margin: 20px 0 10px;
-            font-size: 1.3rem;
+        h1 i {
+            color: var(--discord-primary);
         }
         
-        h3 {
-            color: var(--discord-gray);
-            margin: 15px 0 10px;
-            font-size: 1.1rem;
+        .content {
+            padding: 24px;
         }
         
         .section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 28px;
         }
         
-        .color-inputs {
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--discord-text);
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 8px;
         }
         
-        .color-input {
-            flex: 1;
-            min-width: 200px;
+        .section-title i {
+            color: var(--discord-text-secondary);
+            font-size: 0.9rem;
         }
         
-        .color-input label {
+        .text-input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--discord-dark);
+            border: 1px solid var(--discord-border);
+            border-radius: 8px;
+            color: var(--discord-text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--discord-primary);
+            box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.3);
+        }
+        
+        .color-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .color-input-container {
+            background-color: var(--discord-dark);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--discord-border);
+        }
+        
+        .color-label {
             display: block;
-            margin-bottom: 5px;
-            color: var(--discord-gray);
+            margin-bottom: 10px;
             font-weight: 500;
+            color: var(--discord-text-secondary);
         }
         
         .color-input-group {
             display: flex;
-            align-items: center;
+            gap: 12px;
         }
         
-        .color-input-group input[type="text"] {
+        .color-input {
             flex: 1;
-            padding: 8px 12px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            padding: 10px 12px;
+            background-color: var(--discord-darker);
+            border: 1px solid var(--discord-border);
+            border-radius: 6px;
             color: var(--discord-text);
-            font-size: 14px;
+            font-family: monospace;
         }
         
-        .color-input-group input[type="color"] {
-            width: 40px;
-            height: 40px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 4px;
-            background: transparent;
+        .color-preview {
+            width: 44px;
+            height: 44px;
+            border-radius: 6px;
+            border: 1px solid var(--discord-border);
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-preview:hover {
+            transform: scale(1.05);
+        }
+        
+        .copy-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--discord-dark);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--discord-border);
+            margin-top: 20px;
+        }
+        
+        .color-codes {
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: var(--discord-text-secondary);
         }
         
         .copy-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: var(--discord-blurple);
+            background-color: var(--discord-primary);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-weight: 500;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 600;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: background-color 0.2s;
-            margin-top: 10px;
         }
         
         .copy-btn:hover {
             background-color: #4752c4;
         }
         
-        .preview-section {
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
+        .copy-btn.copied {
+            background-color: var(--discord-success);
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: var(--discord-border);
+            margin: 24px 0;
+        }
+        
+        .preview-container {
+            background-color: var(--discord-dark);
             border-radius: 8px;
-            margin: 20px 0;
+            padding: 24px;
+            border: 1px solid var(--discord-border);
+            text-align: center;
+            margin-bottom: 24px;
         }
         
         .preview-text {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.8rem;
+            font-weight: 800;
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
             display: inline-block;
-            padding: 5px 10px;
+            padding: 8px 16px;
             transition: all 0.3s ease;
+            background-size: 100% 100%;
         }
         
         .glow-controls {
-            margin: 15px 0;
-        }
-        
-        .glow-options {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
+            flex-direction: column;
+            gap: 16px;
         }
         
-        .glow-option {
+        .slider-container {
             display: flex;
             align-items: center;
+            gap: 16px;
         }
         
-        .glow-option input[type="radio"] {
-            margin-right: 5px;
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--discord-primary);
         }
         
-        .glow-option label {
-            color: var(--discord-gray);
+        .glow-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--discord-dark);
+            outline: none;
+        }
+        
+        .glow-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--discord-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .glow-slider::-webkit-slider-thumb:hover {
+            background: #4752c4;
+            transform: scale(1.1);
+        }
+        
+        .glow-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--discord-primary);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .glow-slider::-moz-range-thumb:hover {
+            background: #4752c4;
+            transform: scale(1.1);
         }
         
         .instructions {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 15px;
+            background-color: var(--discord-dark);
             border-radius: 8px;
-            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid var(--discord-border);
         }
         
         .instructions ol {
             margin-left: 20px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         
         .instructions li {
-            margin-bottom: 8px;
-            color: var(--discord-gray);
+            margin-bottom: 10px;
+            color: var(--discord-text-secondary);
+            line-height: 1.6;
         }
         
-        hr {
-            border: none;
-            height: 1px;
-            background-color: rgba(255, 255, 255, 0.1);
-            margin: 25px 0;
-        }
-        
-        /* Animation for the gradient text */
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .glow-description {
+            color: var(--discord-text-secondary);
+            font-size: 0.9rem;
+            margin-top: 8px;
         }
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .color-input {
-                min-width: 100%;
+            .color-section {
+                grid-template-columns: 1fr;
             }
             
             .preview-text {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
+            }
+            
+            .copy-section {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .copy-btn {
+                align-self: stretch;
+                justify-content: center;
             }
         }
         
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 12px;
-            }
-            
-            h1 {
-                font-size: 1.3rem;
+            .content {
+                padding: 16px;
             }
             
             .preview-text {
-                font-size: 1.1rem;
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Discord Gradient Tester</h1>
-        
-        <div class="section">
-            <h2>Display Text</h2>
-            <input type="text" id="displayText" value="Discord User" class="color-input-group input-text">
+        <div class="header">
+            <h1><i class="fab fa-discord"></i> Discord Gradient Tester</h1>
         </div>
         
-        <div class="section">
-            <h3>Start Color</h3>
-            <div class="color-inputs">
-                <div class="color-input">
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-font"></i> Display Text</h2>
+                <input type="text" id="displayText" class="text-input" value="@Display Name">
+            </div>
+            
+            <div class="color-section">
+                <div class="color-input-container">
+                    <span class="color-label">Start Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="startColorHex" value="#5865f2">
-                        <input type="color" id="startColorPicker" value="#5865f2">
+                        <input type="text" id="startColorHex" class="color-input" value="#5865f2">
+                        <div id="startColorPreview" class="color-preview" style="background-color: #5865f2;"></div>
                     </div>
                 </div>
-            </div>
-            
-            <h3>End Color</h3>
-            <div class="color-inputs">
-                <div class="color-input">
+                
+                <div class="color-input-container">
+                    <span class="color-label">End Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="endColorHex" value="#3ba55c">
-                        <input type="color" id="endColorPicker" value="#3ba55c">
+                        <input type="text" id="endColorHex" class="color-input" value="#3ba55c">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #3ba55c;"></div>
                     </div>
                 </div>
             </div>
             
-            <button id="copyBtn" class="copy-btn">Copy</button>
-        </div>
-        
-        <hr>
-        
-        <div class="section">
-            <h2>Preview</h2>
-            <div class="preview-section">
-                <div id="previewText" class="preview-text">Discord User</div>
+            <div class="copy-section">
+                <div class="color-codes" id="colorCodes">#5865f2, #3ba55c</div>
+                <button id="copyBtn" class="copy-btn">
+                    <i class="fas fa-copy"></i> Copy Colors
+                </button>
             </div>
             
-            <h3>Glow Intensity</h3>
-            <div class="glow-controls">
-                <div class="glow-options">
-                    <div class="glow-option">
-                        <input type="radio" id="glowNone" name="glow" value="0" checked>
-                        <label for="glowNone">None</label>
+            <div class="divider"></div>
+            
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-eye"></i> Preview</h2>
+                <div class="preview-container">
+                    <div id="previewText" class="preview-text">@Display Name</div>
+                </div>
+                
+                <h3 class="section-title"><i class="fas fa-lightbulb"></i> Glow Intensity</h3>
+                <div class="glow-controls">
+                    <div class="slider-container">
+                        <span class="slider-value" id="glowValue">0px</span>
+                        <input type="range" min="0" max="20" value="0" class="glow-slider" id="glowSlider">
                     </div>
-                    <div class="glow-option">
-                        <input type="radio" id="glowSmall" name="glow" value="8">
-                        <label for="glowSmall">8px</label>
-                    </div>
-                    <div class="glow-option">
-                        <input type="radio" id="glowMedium" name="glow" value="12">
-                        <label for="glowMedium">12px</label>
-                    </div>
-                    <div class="glow-option">
-                        <input type="radio" id="glowLarge" name="glow" value="16">
-                        <label for="glowLarge">16px</label>
-                    </div>
+                    <p class="glow-description">
+                        Adjust the glow intensity using the slider
+                    </p>
                 </div>
             </div>
-        </div>
-        
-        <div class="instructions">
-            <h2>How to Use</h2>
-            <ol>
-                <li>Enter the text you want to preview in the text field.</li>
-                <li>Choose two colors using the hex inputs or the color picker buttons.</li>
-                <li>Adjust the glow intensity to your preference.</li>
-                <li>Copy the hex codes and use them in your Discord role settings.</li>
-            </ol>
+            
+            <div class="instructions">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> How to Use</h2>
+                <ol>
+                    <li>Enter the text you want to preview in the text field.</li>
+                    <li>Choose two colors using the hex inputs or the color picker buttons.</li>
+                    <li>Adjust the glow intensity to your preference using the slider.</li>
+                    <li>Copy the hex codes and use them in your Discord role settings.</li>
+                </ol>
+            </div>
         </div>
     </div>
 
@@ -322,27 +406,31 @@
         // DOM elements
         const displayTextInput = document.getElementById('displayText');
         const startColorHex = document.getElementById('startColorHex');
-        const startColorPicker = document.getElementById('startColorPicker');
+        const startColorPreview = document.getElementById('startColorPreview');
         const endColorHex = document.getElementById('endColorHex');
-        const endColorPicker = document.getElementById('endColorPicker');
+        const endColorPreview = document.getElementById('endColorPreview');
         const copyBtn = document.getElementById('copyBtn');
+        const colorCodes = document.getElementById('colorCodes');
         const previewText = document.getElementById('previewText');
-        const glowRadios = document.querySelectorAll('input[name="glow"]');
+        const glowSlider = document.getElementById('glowSlider');
+        const glowValue = document.getElementById('glowValue');
         
         // Update preview when inputs change
         function updatePreview() {
-            const text = displayTextInput.value || 'Discord User';
+            const text = displayTextInput.value || '@Display Name';
             const startColor = startColorHex.value;
             const endColor = endColorHex.value;
+            const glowIntensity = glowSlider.value;
             
-            // Get selected glow value
-            let glowValue = '0';
-            for (const radio of glowRadios) {
-                if (radio.checked) {
-                    glowValue = radio.value;
-                    break;
-                }
-            }
+            // Update color previews
+            startColorPreview.style.backgroundColor = startColor;
+            endColorPreview.style.backgroundColor = endColor;
+            
+            // Update color codes display
+            colorCodes.textContent = `${startColor}, ${endColor}`;
+            
+            // Update glow value display
+            glowValue.textContent = `${glowIntensity}px`;
             
             // Create gradient background
             const gradient = `linear-gradient(90deg, ${startColor}, ${endColor})`;
@@ -350,58 +438,65 @@
             // Apply styles to preview text
             previewText.textContent = text;
             previewText.style.backgroundImage = gradient;
-            previewText.style.backgroundSize = '200% 200%';
-            previewText.style.animation = 'gradientAnimation 3s ease infinite';
+            previewText.style.backgroundSize = '100% 100%';
             
             // Apply glow effect if selected
-            if (glowValue !== '0') {
-                previewText.style.textShadow = `0 0 ${glowValue}px ${startColor}`;
+            if (glowIntensity > 0) {
+                previewText.style.textShadow = `0 0 ${glowIntensity}px ${startColor}`;
             } else {
                 previewText.style.textShadow = 'none';
             }
         }
         
-        // Sync color inputs and pickers
-        startColorHex.addEventListener('input', function() {
-            startColorPicker.value = this.value;
-            updatePreview();
-        });
+        // Color picker functionality
+        function openColorPicker(colorInput, previewElement) {
+            // Create a temporary color input
+            const tempInput = document.createElement('input');
+            tempInput.type = 'color';
+            tempInput.value = colorInput.value;
+            
+            tempInput.addEventListener('input', function() {
+                colorInput.value = this.value;
+                updatePreview();
+            });
+            
+            // Trigger click to open color picker
+            tempInput.click();
+        }
         
-        startColorPicker.addEventListener('input', function() {
-            startColorHex.value = this.value;
-            updatePreview();
-        });
+        // Add event listeners for color previews
+        startColorPreview.addEventListener('click', () => openColorPicker(startColorHex, startColorPreview));
+        endColorPreview.addEventListener('click', () => openColorPicker(endColorHex, endColorPreview));
         
-        endColorHex.addEventListener('input', function() {
-            endColorPicker.value = this.value;
-            updatePreview();
-        });
-        
-        endColorPicker.addEventListener('input', function() {
-            endColorHex.value = this.value;
-            updatePreview();
-        });
+        // Sync color inputs and previews
+        startColorHex.addEventListener('input', updatePreview);
+        endColorHex.addEventListener('input', updatePreview);
         
         // Update preview when text changes
         displayTextInput.addEventListener('input', updatePreview);
         
-        // Update preview when glow option changes
-        glowRadios.forEach(radio => {
-            radio.addEventListener('change', updatePreview);
-        });
+        // Update preview when glow slider changes
+        glowSlider.addEventListener('input', updatePreview);
         
         // Copy colors to clipboard
         copyBtn.addEventListener('click', function() {
             const colors = `${startColorHex.value}, ${endColorHex.value}`;
             navigator.clipboard.writeText(colors).then(() => {
                 // Show feedback
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'Copied!';
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.classList.add('copied');
+                
                 setTimeout(() => {
-                    copyBtn.textContent = originalText;
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Colors';
+                    copyBtn.classList.remove('copied');
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
+                copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Colors';
+                }, 2000);
             });
         });
         
