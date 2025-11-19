@@ -146,10 +146,22 @@
             border: 1px solid var(--discord-border);
             cursor: pointer;
             transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
         }
         
         .color-preview:hover {
             transform: scale(1.05);
+        }
+        
+        .color-picker-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
         
         .copy-section {
@@ -349,22 +361,26 @@
                 <div class="color-input-container">
                     <span class="color-label">Start Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="startColorHex" class="color-input" value="#5865f2">
-                        <div id="startColorPreview" class="color-preview" style="background-color: #5865f2;"></div>
+                        <input type="text" id="startColorHex" class="color-input" value="#1424cc">
+                        <div id="startColorPreview" class="color-preview" style="background-color: #1424cc;">
+                            <input type="color" id="startColorPicker" class="color-picker-input" value="#1424cc">
+                        </div>
                     </div>
                 </div>
                 
                 <div class="color-input-container">
                     <span class="color-label">End Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="endColorHex" class="color-input" value="#3ba55c">
-                        <div id="endColorPreview" class="color-preview" style="background-color: #3ba55c;"></div>
+                        <input type="text" id="endColorHex" class="color-input" value="#11c54a">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #11c54a;">
+                            <input type="color" id="endColorPicker" class="color-picker-input" value="#11c54a">
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="copy-section">
-                <div class="color-codes" id="colorCodes">#5865f2, #3ba55c</div>
+                <div class="color-codes" id="colorCodes">#1424cc, #11c54a</div>
                 <button id="copyBtn" class="copy-btn">
                     <i class="fas fa-copy"></i> Copy Colors
                 </button>
@@ -406,9 +422,9 @@
         // DOM elements
         const displayTextInput = document.getElementById('displayText');
         const startColorHex = document.getElementById('startColorHex');
-        const startColorPreview = document.getElementById('startColorPreview');
+        const startColorPicker = document.getElementById('startColorPicker');
         const endColorHex = document.getElementById('endColorHex');
-        const endColorPreview = document.getElementById('endColorPreview');
+        const endColorPicker = document.getElementById('endColorPicker');
         const copyBtn = document.getElementById('copyBtn');
         const colorCodes = document.getElementById('colorCodes');
         const previewText = document.getElementById('previewText');
@@ -423,8 +439,8 @@
             const glowIntensity = glowSlider.value;
             
             // Update color previews
-            startColorPreview.style.backgroundColor = startColor;
-            endColorPreview.style.backgroundColor = endColor;
+            document.getElementById('startColorPreview').style.backgroundColor = startColor;
+            document.getElementById('endColorPreview').style.backgroundColor = endColor;
             
             // Update color codes display
             colorCodes.textContent = `${startColor}, ${endColor}`;
@@ -448,29 +464,26 @@
             }
         }
         
-        // Color picker functionality
-        function openColorPicker(colorInput, previewElement) {
-            // Create a temporary color input
-            const tempInput = document.createElement('input');
-            tempInput.type = 'color';
-            tempInput.value = colorInput.value;
-            
-            tempInput.addEventListener('input', function() {
-                colorInput.value = this.value;
-                updatePreview();
-            });
-            
-            // Trigger click to open color picker
-            tempInput.click();
-        }
+        // Sync color inputs and pickers
+        startColorHex.addEventListener('input', function() {
+            startColorPicker.value = this.value;
+            updatePreview();
+        });
         
-        // Add event listeners for color previews
-        startColorPreview.addEventListener('click', () => openColorPicker(startColorHex, startColorPreview));
-        endColorPreview.addEventListener('click', () => openColorPicker(endColorHex, endColorPreview));
+        startColorPicker.addEventListener('input', function() {
+            startColorHex.value = this.value;
+            updatePreview();
+        });
         
-        // Sync color inputs and previews
-        startColorHex.addEventListener('input', updatePreview);
-        endColorHex.addEventListener('input', updatePreview);
+        endColorHex.addEventListener('input', function() {
+            endColorPicker.value = this.value;
+            updatePreview();
+        });
+        
+        endColorPicker.addEventListener('input', function() {
+            endColorHex.value = this.value;
+            updatePreview();
+        });
         
         // Update preview when text changes
         displayTextInput.addEventListener('input', updatePreview);
