@@ -129,14 +129,42 @@
             gap: 12px;
         }
         
-        .color-input {
+        .hex-input-group {
             flex: 1;
-            padding: 10px 12px;
+            position: relative;
+        }
+        
+        .hex-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            color: #72767d;
+            font-family: monospace;
+            font-size: 14px;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+        
+        .hex-input {
+            width: 100%;
+            padding: 10px 12px 10px 24px;
             background-color: var(--discord-darker);
             border: 1px solid var(--discord-border);
             border-radius: 6px;
             color: var(--discord-text);
             font-family: monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .hex-input:focus {
+            border-color: var(--discord-primary);
+            box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2);
+        }
+        
+        .hex-input:focus + .hex-prefix {
+            color: var(--discord-primary);
         }
         
         .color-preview {
@@ -383,7 +411,10 @@
                 <div class="color-input-container">
                     <span class="color-label">Start Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="startColorHex" class="color-input" value="#5865f2">
+                        <div class="hex-input-group">
+                            <span class="hex-prefix">#</span>
+                            <input type="text" id="startColorHex" class="hex-input" value="5865f2" maxlength="6" placeholder="5865f2">
+                        </div>
                         <div id="startColorPreview" class="color-preview" style="background-color: #5865f2;">
                             <input type="color" id="startColorPicker" class="color-picker-input" value="#5865f2">
                         </div>
@@ -393,7 +424,10 @@
                 <div class="color-input-container">
                     <span class="color-label">End Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="endColorHex" class="color-input" value="#3ba55c">
+                        <div class="hex-input-group">
+                            <span class="hex-prefix">#</span>
+                            <input type="text" id="endColorHex" class="hex-input" value="3ba55c" maxlength="6" placeholder="3ba55c">
+                        </div>
                         <div id="endColorPreview" class="color-preview" style="background-color: #3ba55c;">
                             <input type="color" id="endColorPicker" class="color-picker-input" value="#3ba55c">
                         </div>
@@ -455,12 +489,21 @@
         const glowSlider = document.getElementById('glowSlider');
         const glowValue = document.getElementById('glowValue');
         
+        // Validate hex color
+        function isValidHex(color) {
+            return /^[A-Fa-f0-9]{6}$/.test(color);
+        }
+        
         // Update preview when inputs change
         function updatePreview() {
             const text = displayTextInput.value || '@Display Name';
-            const startColor = startColorHex.value;
-            const endColor = endColorHex.value;
+            const startColorValue = startColorHex.value;
+            const endColorValue = endColorHex.value;
             const glowIntensity = glowSlider.value;
+            
+            // Create full hex colors with #
+            const startColor = '#' + startColorValue;
+            const endColor = '#' + endColorValue;
             
             // Update color previews
             document.getElementById('startColorPreview').style.backgroundColor = startColor;
@@ -499,22 +542,34 @@
         
         // Sync color inputs and pickers
         startColorHex.addEventListener('input', function() {
-            startColorPicker.value = this.value;
-            updatePreview();
+            // Convert to uppercase and remove any non-hex characters
+            startColorHex.value = startColorHex.value.toUpperCase().replace(/[^A-F0-9]/g, '');
+            
+            if (isValidHex(startColorHex.value)) {
+                startColorPicker.value = '#' + startColorHex.value;
+                updatePreview();
+            }
         });
         
         startColorPicker.addEventListener('input', function() {
-            startColorHex.value = this.value;
+            // Remove # from the color value
+            startColorHex.value = startColorPicker.value.substring(1).toUpperCase();
             updatePreview();
         });
         
         endColorHex.addEventListener('input', function() {
-            endColorPicker.value = this.value;
-            updatePreview();
+            // Convert to uppercase and remove any non-hex characters
+            endColorHex.value = endColorHex.value.toUpperCase().replace(/[^A-F0-9]/g, '');
+            
+            if (isValidHex(endColorHex.value)) {
+                endColorPicker.value = '#' + endColorHex.value;
+                updatePreview();
+            }
         });
         
         endColorPicker.addEventListener('input', function() {
-            endColorHex.value = this.value;
+            // Remove # from the color value
+            endColorHex.value = endColorPicker.value.substring(1).toUpperCase();
             updatePreview();
         });
         
@@ -526,7 +581,7 @@
         
         // Copy colors to clipboard
         copyBtn.addEventListener('click', function() {
-            const colors = `${startColorHex.value}, ${endColorHex.value}`;
+            const colors = `#${startColorHex.value}, #${endColorHex.value}`;
             navigator.clipboard.writeText(colors).then(() => {
                 // Show feedback
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
