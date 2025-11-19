@@ -216,6 +216,7 @@
             border: 1px solid var(--discord-border);
             text-align: center;
             margin-bottom: 24px;
+            position: relative;
         }
         
         .preview-text {
@@ -228,6 +229,27 @@
             padding: 8px 16px;
             transition: all 0.3s ease;
             background-size: 100% 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .glow-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 800;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
         }
         
         .glow-controls {
@@ -318,7 +340,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .preview-text {
+            .preview-text, .glow-effect {
                 font-size: 1.5rem;
             }
             
@@ -339,7 +361,7 @@
                 padding: 16px;
             }
             
-            .preview-text {
+            .preview-text, .glow-effect {
                 font-size: 1.3rem;
             }
         }
@@ -361,9 +383,9 @@
                 <div class="color-input-container">
                     <span class="color-label">Start Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="startColorHex" class="color-input" value="#1424cc">
-                        <div id="startColorPreview" class="color-preview" style="background-color: #1424cc;">
-                            <input type="color" id="startColorPicker" class="color-picker-input" value="#1424cc">
+                        <input type="text" id="startColorHex" class="color-input" value="#5865f2">
+                        <div id="startColorPreview" class="color-preview" style="background-color: #5865f2;">
+                            <input type="color" id="startColorPicker" class="color-picker-input" value="#5865f2">
                         </div>
                     </div>
                 </div>
@@ -371,16 +393,16 @@
                 <div class="color-input-container">
                     <span class="color-label">End Color</span>
                     <div class="color-input-group">
-                        <input type="text" id="endColorHex" class="color-input" value="#11c54a">
-                        <div id="endColorPreview" class="color-preview" style="background-color: #11c54a;">
-                            <input type="color" id="endColorPicker" class="color-picker-input" value="#11c54a">
+                        <input type="text" id="endColorHex" class="color-input" value="#3ba55c">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #3ba55c;">
+                            <input type="color" id="endColorPicker" class="color-picker-input" value="#3ba55c">
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="copy-section">
-                <div class="color-codes" id="colorCodes">#1424cc, #11c54a</div>
+                <div class="color-codes" id="colorCodes">#5865f2, #3ba55c</div>
                 <button id="copyBtn" class="copy-btn">
                     <i class="fas fa-copy"></i> Copy Colors
                 </button>
@@ -392,6 +414,7 @@
                 <h2 class="section-title"><i class="fas fa-eye"></i> Preview</h2>
                 <div class="preview-container">
                     <div id="previewText" class="preview-text">@Display Name</div>
+                    <div id="glowEffect" class="glow-effect">@Display Name</div>
                 </div>
                 
                 <h3 class="section-title"><i class="fas fa-lightbulb"></i> Glow Intensity</h3>
@@ -428,6 +451,7 @@
         const copyBtn = document.getElementById('copyBtn');
         const colorCodes = document.getElementById('colorCodes');
         const previewText = document.getElementById('previewText');
+        const glowEffect = document.getElementById('glowEffect');
         const glowSlider = document.getElementById('glowSlider');
         const glowValue = document.getElementById('glowValue');
         
@@ -456,11 +480,20 @@
             previewText.style.backgroundImage = gradient;
             previewText.style.backgroundSize = '100% 100%';
             
-            // Apply glow effect if selected
+            // Apply styles to glow effect
+            glowEffect.textContent = text;
+            glowEffect.style.backgroundImage = gradient;
+            glowEffect.style.backgroundSize = '100% 100%';
+            glowEffect.style.fontSize = previewText.style.fontSize;
+            glowEffect.style.fontWeight = previewText.style.fontWeight;
+            
+            // Apply glow effect using filter and opacity
             if (glowIntensity > 0) {
-                previewText.style.textShadow = `0 0 ${glowIntensity}px ${startColor}`;
+                glowEffect.style.filter = `blur(${glowIntensity}px)`;
+                glowEffect.style.opacity = '0.7';
             } else {
-                previewText.style.textShadow = 'none';
+                glowEffect.style.filter = 'blur(0px)';
+                glowEffect.style.opacity = '0';
             }
         }
         
