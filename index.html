@@ -3,734 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Role Gradient Tester</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Discord Gradient Tester</title>
     <style>
+        :root {
+            --discord-blurple: #5865f2;
+            --discord-green: #3ba55c;
+            --discord-dark: #2f3136;
+            --discord-darker: #202225;
+            --discord-text: #ffffff;
+            --discord-gray: #8e9297;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
-
+        
         body {
-            background-color: #36393f;
-            color: #dcddde;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
+            background-color: var(--discord-darker);
+            color: var(--discord-text);
             line-height: 1.5;
+            padding: 20px;
+            min-height: 100vh;
         }
-
+        
         .container {
             max-width: 800px;
-            width: 100%;
-            background-color: #2f3136;
+            margin: 0 auto;
+            background-color: var(--discord-dark);
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: var(--discord-text);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        h2 {
+            color: var(--discord-text);
+            margin: 20px 0 10px;
+            font-size: 1.3rem;
+        }
+        
+        h3 {
+            color: var(--discord-gray);
+            margin: 15px 0 10px;
+            font-size: 1.1rem;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .color-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .color-input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .color-input label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--discord-gray);
+            font-weight: 500;
+        }
+        
+        .color-input-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .color-input-group input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--discord-text);
+            font-size: 14px;
+        }
+        
+        .color-input-group input[type="color"] {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        .copy-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--discord-blurple);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
             margin-top: 10px;
         }
-
-        .header {
-            background-color: #202225;
-            padding: 16px 20px;
-            border-bottom: 1px solid #42454a;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+        
+        .copy-btn:hover {
+            background-color: #4752c4;
         }
-
-        .header h1 {
-            font-size: clamp(18px, 4vw, 20px);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .gradient-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #5865f2, #3ba55c);
-            flex-shrink: 0;
-        }
-
-        .content {
+        
+        .preview-section {
+            text-align: center;
             padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 20px 0;
         }
-
-        .text-input-section {
-            margin-bottom: 25px;
+        
+        .preview-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
         }
-
-        .text-input-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #b9bbbe;
+        
+        .glow-controls {
+            margin: 15px 0;
         }
-
-        .text-input {
-            width: 100%;
-            background-color: #40444b;
-            border: 1px solid #42454a;
-            border-radius: 4px;
-            padding: 14px 12px;
-            color: #dcddde;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s ease;
+        
+        .glow-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
         }
-
-        .text-input:focus {
-            border-color: #5865f2;
+        
+        .glow-option {
+            display: flex;
+            align-items: center;
         }
-
-        .color-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+        
+        .glow-option input[type="radio"] {
+            margin-right: 5px;
         }
-
-        @media (max-width: 768px) {
-            .color-controls {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        
+        .glow-option label {
+            color: var(--discord-gray);
+        }
+        
+        .instructions {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: var(--discord-gray);
+        }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 25px 0;
+        }
+        
+        /* Animation for the gradient text */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
             }
-            
-            .content {
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
                 padding: 15px;
             }
             
-            .header {
-                padding: 14px 16px;
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .color-input {
+                min-width: 100%;
+            }
+            
+            .preview-text {
+                font-size: 1.3rem;
             }
         }
-
+        
         @media (max-width: 480px) {
             body {
                 padding: 10px;
             }
             
-            .content {
+            .container {
                 padding: 12px;
             }
             
-            .color-controls {
-                gap: 15px;
-            }
-        }
-
-        .color-picker {
-            background-color: #40444b;
-            border-radius: 8px;
-            padding: 16px;
-            border: 1px solid #42454a;
-        }
-
-        .color-picker h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #b9bbbe;
-        }
-
-        .color-input-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            position: relative;
-        }
-
-        @media (max-width: 480px) {
-            .color-input-group {
-                flex-wrap: wrap;
+            h1 {
+                font-size: 1.3rem;
             }
             
-            .color-preview {
-                order: 1;
-            }
-            
-            .hex-input-group {
-                order: 2;
-                flex: 1 1 100%;
-                margin-top: 10px;
-            }
-            
-            .copy-btn {
-                order: 3;
-                flex: 1;
-                min-width: 80px;
-            }
-        }
-
-        .color-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 4px;
-            border: 1px solid #42454a;
-            cursor: pointer;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            transition: transform 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .color-preview:hover {
-            transform: scale(1.05);
-        }
-
-        /* Color picker input - properly positioned for mobile */
-        .color-picker-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .hex-input {
-            flex: 1;
-            background-color: #36393f;
-            border: 1px solid #42454a;
-            border-radius: 4px;
-            padding: 12px 12px 12px 32px;
-            color: #dcddde;
-            font-family: monospace;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-            min-width: 0;
-        }
-
-        .hex-input:focus {
-            border-color: #5865f2;
-            box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2);
-        }
-
-        .copy-btn {
-            background-color: #5865f2;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px 14px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            flex-shrink: 0;
-            min-height: 44px;
-        }
-
-        .copy-btn:hover {
-            background-color: #4752c4;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn.copied {
-            background-color: #3ba55c;
-            transform: scale(0.98);
-        }
-
-        .preview-section {
-            background-color: #40444b;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #42454a;
-        }
-
-        .preview-section h2 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #b9bbbe;
-        }
-
-        .gradient-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px 15px;
-            border-radius: 8px;
-            background-color: #36393f;
-            min-height: 180px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        @media (max-width: 480px) {
-            .gradient-preview {
-                padding: 25px 12px;
-                min-height: 160px;
-            }
-        }
-
-        .gradient-text {
-            font-size: clamp(24px, 6vw, 32px);
-            font-weight: 700;
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 20px;
-            text-align: center;
-            background-size: 200% 100%;
-            background-position: 0% 50%;
-            animation: smallWave 4s ease-in-out infinite;
-            will-change: background-position;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
-            position: relative;
-            word-break: break-word;
-            max-width: 100%;
-            padding: 0 10px;
-        }
-
-        .gradient-text::before {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: inherit;
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            filter: blur(8px);
-            opacity: 0.7;
-            z-index: -1;
-            animation: inherit;
-        }
-
-        @keyframes smallWave {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            25% {
-                background-position: 30% 50%;
-            }
-            50% {
-                background-position: 60% 50%;
-            }
-            75% {
-                background-position: 30% 50%;
-            }
-        }
-
-        .instructions {
-            background-color: #40444b;
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid #42454a;
-        }
-
-        .instructions h2 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #b9bbbe;
-        }
-
-        .instructions p {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 10px;
-            color: #dcddde;
-        }
-
-        .instructions code {
-            background-color: #36393f;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 13px;
-            color: #dcddde;
-        }
-
-        .color-picker-btn {
-            background: none;
-            border: none;
-            color: #dcddde;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 8px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            min-height: 44px;
-            min-width: 44px;
-            z-index: 5;
-            position: relative;
-        }
-
-        .color-picker-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
-        }
-        
-        .hex-input-group {
-            display: flex;
-            align-items: center;
-            position: relative;
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .hex-prefix {
-            position: absolute;
-            left: 12px;
-            color: #72767d;
-            font-family: monospace;
-            font-size: 16px;
-            pointer-events: none;
-            transition: color 0.3s ease;
-            z-index: 2;
-        }
-        
-        .hex-input-with-prefix {
-            padding-left: 32px;
-        }
-        
-        .hex-input-with-prefix:focus + .hex-prefix {
-            color: #5865f2;
-        }
-        
-        .gradient-info {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #b9bbbe;
-            text-align: center;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-            padding: 0 10px;
-        }
-        
-        .gradient-info:hover {
-            opacity: 1;
-        }
-        
-        .color-preview, .hex-input, .copy-btn, .color-picker-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .gradient-preview {
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            perspective: 1000;
-        }
-
-        .control-group {
-            margin-top: 15px;
-            width: 100%;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .control-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .control-item label {
-            display: block;
-            margin-bottom: 8px;
-            color: #b9bbbe;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .control-slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: #40444b;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .control-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #5865f2;
-            cursor: pointer;
-            border: 2px solid #36393f;
-            transition: all 0.2s ease;
-        }
-
-        .control-slider::-webkit-slider-thumb:hover {
-            background: #4752c4;
-            transform: scale(1.1);
-        }
-
-        .control-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #5865f2;
-            cursor: pointer;
-            border: 2px solid #36393f;
-            transition: all 0.2s ease;
-        }
-
-        .control-slider::-moz-range-thumb:hover {
-            background: #4752c4;
-            transform: scale(1.1);
-        }
-
-        .control-value {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #72767d;
-            text-align: center;
-        }
-
-        /* Touch device improvements */
-        @media (hover: none) {
-            .color-preview:hover,
-            .copy-btn:hover,
-            .color-picker-btn:hover {
-                transform: none;
-            }
-            
-            .copy-btn:active,
-            .color-picker-btn:active {
-                transform: scale(0.95);
-            }
-        }
-
-        /* Prevent zoom on input focus for mobile */
-        @media (max-width: 768px) {
-            .text-input,
-            .hex-input {
-                font-size: 16px; /* Prevents zoom on iOS */
+            .preview-text {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><i class="fab fa-discord"></i> Discord Gradient Tester</h1>
-            <div class="gradient-icon" id="gradientIcon"></div>
+        <h1>Discord Gradient Tester</h1>
+        
+        <div class="section">
+            <h2>Display Text</h2>
+            <input type="text" id="displayText" value="Discord User" class="color-input-group input-text">
         </div>
-        <div class="content">
-            <div class="text-input-section">
-                <h3>Display Text</h3>
-                <input type="text" class="text-input" id="displayText" value="Discord User" placeholder="Enter text to preview gradient">
-            </div>
-
-            <div class="color-controls">
-                <div class="color-picker">
-                    <h3>Start Color</h3>
+        
+        <div class="section">
+            <h3>Start Color</h3>
+            <div class="color-inputs">
+                <div class="color-input">
                     <div class="color-input-group">
-                        <div class="color-preview" id="color1Preview" style="background-color: #5865f2;">
-                            <input type="color" class="color-picker-input" id="color1Picker" value="#5865f2">
-                            <button class="color-picker-btn" id="color1PickerBtn"><i class="fas fa-eye-dropper"></i></button>
-                        </div>
-                        <div class="hex-input-group">
-                            <span class="hex-prefix">#</span>
-                            <input type="text" class="hex-input hex-input-with-prefix" id="color1Input" value="5865f2" maxlength="6" placeholder="5865f2">
-                        </div>
-                        <button class="copy-btn" id="copyColor1">Copy</button>
-                    </div>
-                </div>
-                <div class="color-picker">
-                    <h3>End Color</h3>
-                    <div class="color-input-group">
-                        <div class="color-preview" id="color2Preview" style="background-color: #3ba55c;">
-                            <input type="color" class="color-picker-input" id="color2Picker" value="#3ba55c">
-                            <button class="color-picker-btn" id="color2PickerBtn"><i class="fas fa-eye-dropper"></i></button>
-                        </div>
-                        <div class="hex-input-group">
-                            <span class="hex-prefix">#</span>
-                            <input type="text" class="hex-input hex-input-with-prefix" id="color2Input" value="3ba55c" maxlength="6" placeholder="3ba55c">
-                        </div>
-                        <button class="copy-btn" id="copyColor2">Copy</button>
+                        <input type="text" id="startColorHex" value="#5865f2">
+                        <input type="color" id="startColorPicker" value="#5865f2">
                     </div>
                 </div>
             </div>
-
+            
+            <h3>End Color</h3>
+            <div class="color-inputs">
+                <div class="color-input">
+                    <div class="color-input-group">
+                        <input type="text" id="endColorHex" value="#3ba55c">
+                        <input type="color" id="endColorPicker" value="#3ba55c">
+                    </div>
+                </div>
+            </div>
+            
+            <button id="copyBtn" class="copy-btn">Copy</button>
+        </div>
+        
+        <hr>
+        
+        <div class="section">
+            <h2>Preview</h2>
             <div class="preview-section">
-                <h2>Preview</h2>
-                <div class="gradient-preview">
-                    <div class="gradient-text" id="gradientText" data-text="Discord User">Discord User</div>
-                    
-                    <div class="control-group">
-                        <div class="control-item">
-                            <label for="glowIntensity">Glow Intensity</label>
-                            <input type="range" class="control-slider" id="glowIntensity" min="0" max="20" value="8">
-                            <div class="control-value" id="glowValue">8px</div>
-                        </div>
+                <div id="previewText" class="preview-text">Discord User</div>
+            </div>
+            
+            <h3>Glow Intensity</h3>
+            <div class="glow-controls">
+                <div class="glow-options">
+                    <div class="glow-option">
+                        <input type="radio" id="glowNone" name="glow" value="0" checked>
+                        <label for="glowNone">None</label>
                     </div>
-                    
-                    <div class="gradient-info">Small wave gradient animation with glow effect</div>
+                    <div class="glow-option">
+                        <input type="radio" id="glowSmall" name="glow" value="8">
+                        <label for="glowSmall">8px</label>
+                    </div>
+                    <div class="glow-option">
+                        <input type="radio" id="glowMedium" name="glow" value="12">
+                        <label for="glowMedium">12px</label>
+                    </div>
+                    <div class="glow-option">
+                        <input type="radio" id="glowLarge" name="glow" value="16">
+                        <label for="glowLarge">16px</label>
+                    </div>
                 </div>
             </div>
-
-            <div class="instructions">
-                <h2>How to Use</h2>
-                <p>1. Enter the text you want to preview in the text field.</p>
-                <p>2. Choose two colors using the hex inputs or the color picker buttons.</p>
-                <p>3. Adjust the glow intensity to your preference.</p>
-                <p>4. Copy the hex codes and use them in your Discord role settings.</p>
-            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>How to Use</h2>
+            <ol>
+                <li>Enter the text you want to preview in the text field.</li>
+                <li>Choose two colors using the hex inputs or the color picker buttons.</li>
+                <li>Adjust the glow intensity to your preference.</li>
+                <li>Copy the hex codes and use them in your Discord role settings.</li>
+            </ol>
         </div>
     </div>
 
     <script>
         // DOM elements
-        const color1Input = document.getElementById('color1Input');
-        const color2Input = document.getElementById('color2Input');
-        const color1Preview = document.getElementById('color1Preview');
-        const color2Preview = document.getElementById('color2Preview');
-        const color1Picker = document.getElementById('color1Picker');
-        const color2Picker = document.getElementById('color2Picker');
-        const color1PickerBtn = document.getElementById('color1PickerBtn');
-        const color2PickerBtn = document.getElementById('color2PickerBtn');
-        const gradientText = document.getElementById('gradientText');
-        const gradientIcon = document.getElementById('gradientIcon');
-        const displayText = document.getElementById('displayText');
-        const copyColor1Btn = document.getElementById('copyColor1');
-        const copyColor2Btn = document.getElementById('copyColor2');
-        const glowIntensity = document.getElementById('glowIntensity');
-        const glowValue = document.getElementById('glowValue');
-
-        // Event listeners for color pickers
-        color1Picker.addEventListener('input', function() {
-            // Remove # from the color value
-            color1Input.value = color1Picker.value.substring(1);
-            updateGradient();
+        const displayTextInput = document.getElementById('displayText');
+        const startColorHex = document.getElementById('startColorHex');
+        const startColorPicker = document.getElementById('startColorPicker');
+        const endColorHex = document.getElementById('endColorHex');
+        const endColorPicker = document.getElementById('endColorPicker');
+        const copyBtn = document.getElementById('copyBtn');
+        const previewText = document.getElementById('previewText');
+        const glowRadios = document.querySelectorAll('input[name="glow"]');
+        
+        // Update preview when inputs change
+        function updatePreview() {
+            const text = displayTextInput.value || 'Discord User';
+            const startColor = startColorHex.value;
+            const endColor = endColorHex.value;
+            
+            // Get selected glow value
+            let glowValue = '0';
+            for (const radio of glowRadios) {
+                if (radio.checked) {
+                    glowValue = radio.value;
+                    break;
+                }
+            }
+            
+            // Create gradient background
+            const gradient = `linear-gradient(90deg, ${startColor}, ${endColor})`;
+            
+            // Apply styles to preview text
+            previewText.textContent = text;
+            previewText.style.backgroundImage = gradient;
+            previewText.style.backgroundSize = '200% 200%';
+            previewText.style.animation = 'gradientAnimation 3s ease infinite';
+            
+            // Apply glow effect if selected
+            if (glowValue !== '0') {
+                previewText.style.textShadow = `0 0 ${glowValue}px ${startColor}`;
+            } else {
+                previewText.style.textShadow = 'none';
+            }
+        }
+        
+        // Sync color inputs and pickers
+        startColorHex.addEventListener('input', function() {
+            startColorPicker.value = this.value;
+            updatePreview();
         });
         
-        color2Picker.addEventListener('input', function() {
-            // Remove # from the color value
-            color2Input.value = color2Picker.value.substring(1);
-            updateGradient();
-        });
-
-        // Click on buttons to open color picker
-        color1PickerBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            color1Picker.click();
+        startColorPicker.addEventListener('input', function() {
+            startColorHex.value = this.value;
+            updatePreview();
         });
         
-        color2PickerBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            color2Picker.click();
+        endColorHex.addEventListener('input', function() {
+            endColorPicker.value = this.value;
+            updatePreview();
         });
-
-        // Update gradient preview with small wave animation
-        function updateGradient() {
-            const color1 = '#' + color1Input.value;
-            const color2 = '#' + color2Input.value;
-            const text = displayText.value || 'Discord User';
-            const glowValue = glowIntensity.value;
-            
-            // Update preview colors
-            color1Preview.style.backgroundColor = color1;
-            color2Preview.style.backgroundColor = color2;
-            
-            // Update color picker values
-            color1Picker.value = color1;
-            color2Picker.value = color2;
-            
-            // Update gradient icon
-            gradientIcon.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-            
-            // Update gradient text with small wave animation
-            gradientText.textContent = text;
-            gradientText.setAttribute('data-text', text);
-            
-            // Create gradient pattern for small wave animation
-            gradientText.style.background = `linear-gradient(90deg, 
-                ${color1}, 
-                ${color2}, 
-                ${color1})`;
-            gradientText.style.backgroundClip = 'text';
-            gradientText.style.webkitBackgroundClip = 'text';
-            
-            // Update glow effect
-            gradientText.style.filter = `drop-shadow(0 0 ${glowValue}px currentColor) drop-shadow(0 0 ${glowValue * 1.5}px rgba(255, 255, 255, 0.3))`;
-            
-            // Update control values display
-            glowValue.textContent = `${glowIntensity.value}px`;
-        }
-
-        // Validate hex color
-        function isValidHex(color) {
-            return /^[A-Fa-f0-9]{6}$/.test(color);
-        }
-
-        // Copy to clipboard
-        function copyToClipboard(text, button) {
-            navigator.clipboard.writeText('#' + text).then(() => {
-                // Visual feedback
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
-                
+        
+        endColorPicker.addEventListener('input', function() {
+            endColorHex.value = this.value;
+            updatePreview();
+        });
+        
+        // Update preview when text changes
+        displayTextInput.addEventListener('input', updatePreview);
+        
+        // Update preview when glow option changes
+        glowRadios.forEach(radio => {
+            radio.addEventListener('change', updatePreview);
+        });
+        
+        // Copy colors to clipboard
+        copyBtn.addEventListener('click', function() {
+            const colors = `${startColorHex.value}, ${endColorHex.value}`;
+            navigator.clipboard.writeText(colors).then(() => {
+                // Show feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
                 setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('copied');
+                    copyBtn.textContent = originalText;
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
-        }
-
-        // Event listeners
-        color1Input.addEventListener('input', function() {
-            // Convert to uppercase and remove any non-hex characters
-            color1Input.value = color1Input.value.toUpperCase().replace(/[^A-F0-9]/g, '');
-            
-            if (isValidHex(color1Input.value)) {
-                updateGradient();
-            }
         });
-
-        color2Input.addEventListener('input', function() {
-            // Convert to uppercase and remove any non-hex characters
-            color2Input.value = color2Input.value.toUpperCase().replace(/[^A-F0-9]/g, '');
-            
-            if (isValidHex(color2Input.value)) {
-                updateGradient();
-            }
-        });
-
-        displayText.addEventListener('input', updateGradient);
-        glowIntensity.addEventListener('input', updateGradient);
-
-        copyColor1Btn.addEventListener('click', function() {
-            copyToClipboard(color1Input.value, copyColor1Btn);
-        });
-
-        copyColor2Btn.addEventListener('click', function() {
-            copyToClipboard(color2Input.value, copyColor2Btn);
-        });
-
-        // Initialize
-        updateGradient();
+        
+        // Initialize preview
+        updatePreview();
     </script>
 </body>
 </html>
