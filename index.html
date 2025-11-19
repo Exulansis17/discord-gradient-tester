@@ -87,9 +87,24 @@
             font-size: 0.9rem;
         }
         
+        .text-input-group {
+            position: relative;
+        }
+        
+        .text-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #72767d;
+            font-size: 16px;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+        
         .text-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px 16px 12px 24px;
             background-color: var(--discord-dark);
             border: 1px solid var(--discord-border);
             border-radius: 8px;
@@ -102,6 +117,10 @@
             outline: none;
             border-color: var(--discord-primary);
             box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.3);
+        }
+        
+        .text-input:focus + .text-prefix {
+            color: var(--discord-primary);
         }
         
         .color-section {
@@ -138,8 +157,8 @@
             position: absolute;
             left: 12px;
             top: 50%;
-            color: #72767d;
             transform: translateY(-60%);
+            color: #72767d;
             font-family: monospace;
             font-size: 14px;
             pointer-events: none;
@@ -405,7 +424,10 @@
         <div class="content">
             <div class="section">
                 <h2 class="section-title"><i class="fas fa-font"></i> Display Text</h2>
-                <input type="text" id="displayText" class="text-input" value="@Display Name">
+                <div class="text-input-group">
+                    <span class="text-prefix">@</span>
+                    <input type="text" id="displayText" class="text-input" value="Display Name" placeholder="Display Name">
+                </div>
             </div>
             
             <div class="color-section">
@@ -497,7 +519,7 @@
         
         // Update preview when inputs change
         function updatePreview() {
-            const text = displayTextInput.value || '@Display Name';
+            const text = displayTextInput.value || 'Display Name';
             const startColorValue = startColorHex.value;
             const endColorValue = endColorHex.value;
             const glowIntensity = glowSlider.value;
@@ -519,13 +541,13 @@
             // Create gradient background
             const gradient = `linear-gradient(90deg, ${startColor}, ${endColor})`;
             
-            // Apply styles to preview text
-            previewText.textContent = text;
+            // Apply styles to preview text (add @ prefix for display)
+            previewText.textContent = '@' + text;
             previewText.style.backgroundImage = gradient;
             previewText.style.backgroundSize = '100% 100%';
             
-            // Apply styles to glow effect
-            glowEffect.textContent = text;
+            // Apply styles to glow effect (add @ prefix for display)
+            glowEffect.textContent = '@' + text;
             glowEffect.style.backgroundImage = gradient;
             glowEffect.style.backgroundSize = '100% 100%';
             glowEffect.style.fontSize = previewText.style.fontSize;
