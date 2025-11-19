@@ -146,6 +146,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            position: relative;
         }
 
         @media (max-width: 480px) {
@@ -183,10 +184,24 @@
             color: white;
             font-size: 14px;
             transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .color-preview:hover {
             transform: scale(1.05);
+        }
+
+        /* Color picker input - properly positioned for mobile */
+        .color-picker-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
         }
 
         .hex-input {
@@ -361,6 +376,8 @@
             transition: all 0.3s ease;
             min-height: 44px;
             min-width: 44px;
+            z-index: 5;
+            position: relative;
         }
 
         .color-picker-btn:hover {
@@ -528,6 +545,7 @@
                     <h3>Start Color</h3>
                     <div class="color-input-group">
                         <div class="color-preview" id="color1Preview" style="background-color: #5865f2;">
+                            <input type="color" class="color-picker-input" id="color1Picker" value="#5865f2">
                             <button class="color-picker-btn" id="color1PickerBtn"><i class="fas fa-eye-dropper"></i></button>
                         </div>
                         <div class="hex-input-group">
@@ -541,6 +559,7 @@
                     <h3>End Color</h3>
                     <div class="color-input-group">
                         <div class="color-preview" id="color2Preview" style="background-color: #3ba55c;">
+                            <input type="color" class="color-picker-input" id="color2Picker" value="#3ba55c">
                             <button class="color-picker-btn" id="color2PickerBtn"><i class="fas fa-eye-dropper"></i></button>
                         </div>
                         <div class="hex-input-group">
@@ -585,6 +604,8 @@
         const color2Input = document.getElementById('color2Input');
         const color1Preview = document.getElementById('color1Preview');
         const color2Preview = document.getElementById('color2Preview');
+        const color1Picker = document.getElementById('color1Picker');
+        const color2Picker = document.getElementById('color2Picker');
         const color1PickerBtn = document.getElementById('color1PickerBtn');
         const color2PickerBtn = document.getElementById('color2PickerBtn');
         const gradientText = document.getElementById('gradientText');
@@ -595,55 +616,29 @@
         const glowIntensity = document.getElementById('glowIntensity');
         const glowValue = document.getElementById('glowValue');
 
-        // Initialize color pickers
-        function initializeColorPickers() {
-            // Create color picker inputs
-            const color1Picker = document.createElement('input');
-            color1Picker.type = 'color';
-            color1Picker.value = '#5865f2';
-            color1Picker.style.position = 'absolute';
-            color1Picker.style.opacity = '0';
-            color1Picker.style.pointerEvents = 'none';
-            color1Picker.style.width = '40px';
-            color1Picker.style.height = '40px';
-            
-            const color2Picker = document.createElement('input');
-            color2Picker.type = 'color';
-            color2Picker.value = '#3ba55c';
-            color2Picker.style.position = 'absolute';
-            color2Picker.style.opacity = '0';
-            color2Picker.style.pointerEvents = 'none';
-            color2Picker.style.width = '40px';
-            color2Picker.style.height = '40px';
-            
-            // Add to DOM
-            color1Preview.appendChild(color1Picker);
-            color2Preview.appendChild(color2Picker);
-            
-            // Event listeners for color pickers
-            color1Picker.addEventListener('input', function() {
-                // Remove # from the color value
-                color1Input.value = color1Picker.value.substring(1);
-                updateGradient();
-            });
-            
-            color2Picker.addEventListener('input', function() {
-                // Remove # from the color value
-                color2Input.value = color2Picker.value.substring(1);
-                updateGradient();
-            });
-            
-            // Click on buttons to open color picker
-            color1PickerBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                color1Picker.click();
-            });
-            
-            color2PickerBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                color2Picker.click();
-            });
-        }
+        // Event listeners for color pickers
+        color1Picker.addEventListener('input', function() {
+            // Remove # from the color value
+            color1Input.value = color1Picker.value.substring(1);
+            updateGradient();
+        });
+        
+        color2Picker.addEventListener('input', function() {
+            // Remove # from the color value
+            color2Input.value = color2Picker.value.substring(1);
+            updateGradient();
+        });
+
+        // Click on buttons to open color picker
+        color1PickerBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            color1Picker.click();
+        });
+        
+        color2PickerBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            color2Picker.click();
+        });
 
         // Update gradient preview with small wave animation
         function updateGradient() {
@@ -655,6 +650,10 @@
             // Update preview colors
             color1Preview.style.backgroundColor = color1;
             color2Preview.style.backgroundColor = color2;
+            
+            // Update color picker values
+            color1Picker.value = color1;
+            color2Picker.value = color2;
             
             // Update gradient icon
             gradientIcon.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
@@ -707,9 +706,6 @@
             
             if (isValidHex(color1Input.value)) {
                 updateGradient();
-                // Update the color picker value
-                const colorPicker = color1Preview.querySelector('input[type="color"]');
-                colorPicker.value = '#' + color1Input.value;
             }
         });
 
@@ -719,9 +715,6 @@
             
             if (isValidHex(color2Input.value)) {
                 updateGradient();
-                // Update the color picker value
-                const colorPicker = color2Preview.querySelector('input[type="color"]');
-                colorPicker.value = '#' + color2Input.value;
             }
         });
 
@@ -737,7 +730,6 @@
         });
 
         // Initialize
-        initializeColorPickers();
         updateGradient();
     </script>
 </body>
