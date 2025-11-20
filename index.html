@@ -63,7 +63,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(90deg, #5865f2, #7289DA);
+            background: linear-gradient(90deg, #5865f2, #57F287);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -376,6 +376,39 @@
             border: none;
         }
 
+        /* QUICK ACTIONS STYLES */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            background: var(--discord-dark);
+            border: 1px solid var(--discord-border);
+            color: var(--discord-text);
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: var(--discord-hover);
+            transform: translateY(-1px);
+            border-color: var(--discord-primary);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
         .instructions {
             background-color: var(--discord-dark);
             border-radius: 8px;
@@ -409,6 +442,10 @@
             
             .preview-container {
                 padding: 16px;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
             }
         }
 
@@ -463,17 +500,27 @@
                     <div class="color-input-group">
                         <div class="hex-input-group">
                             <span class="hex-prefix">#</span>
-                            <input type="text" id="endColorHex" class="hex-input" value="7289DA" maxlength="6">
+                            <input type="text" id="endColorHex" class="hex-input" value="57F287" maxlength="6">
                         </div>
-                        <div id="endColorPreview" class="color-preview" style="background-color: #7289DA;">
-                            <input type="color" id="endColorPicker" class="color-picker-input" value="#7289DA">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #57F287;">
+                            <input type="color" id="endColorPicker" class="color-picker-input" value="#57F287">
                         </div>
                     </div>
                 </div>
             </div>
             
+            <!-- QUICK ACTIONS SECTION -->
+            <div class="quick-actions">
+                <button id="randomBtn" class="action-btn">
+                    <i class="fas fa-random"></i> Random Colors
+                </button>
+                <button id="swapBtn" class="action-btn">
+                    <i class="fas fa-exchange-alt"></i> Swap Colors
+                </button>
+            </div>
+            
             <div class="copy-section">
-                <div class="color-codes" id="colorCodes">#5865f2, #7289DA</div>
+                <div class="color-codes" id="colorCodes">#5865f2, #57F287</div>
                 <button id="copyBtn" class="copy-btn">
                     <i class="fas fa-copy"></i> Copy Colors
                 </button>
@@ -502,6 +549,7 @@
                 <ol>
                     <li>Enter the text you want to preview.</li>
                     <li>Pick two colors using hex or color picker.</li>
+                    <li>Use <strong>Random Colors</strong> for instant inspiration or <strong>Swap Colors</strong> to reverse the gradient.</li>
                     <li>Adjust glow intensity.</li>
                     <li>Copy the hex codes.</li>
                 </ol>
@@ -516,6 +564,8 @@
         const endColorHex = document.getElementById('endColorHex');
         const endColorPicker = document.getElementById('endColorPicker');
         const copyBtn = document.getElementById('copyBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const swapBtn = document.getElementById('swapBtn');
         const colorCodes = document.getElementById('colorCodes');
         const previewText = document.getElementById('previewText');
         const glowEffect = document.getElementById('glowEffect');
@@ -525,6 +575,21 @@
 
         function isValidHex(color) {
             return /^[A-Fa-f0-9]{6}$/.test(color);
+        }
+
+        // QUICK WIN FUNCTIONS
+        function randomizeColors() {
+            const randomColor = () => Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            startColorHex.value = randomColor().toUpperCase();
+            endColorHex.value = randomColor().toUpperCase();
+            updatePreview();
+        }
+
+        function swapColors() {
+            const temp = startColorHex.value;
+            startColorHex.value = endColorHex.value;
+            endColorHex.value = temp;
+            updatePreview();
         }
 
         function updatePreview() {
@@ -538,6 +603,10 @@
             
             document.getElementById('startColorPreview').style.backgroundColor = startColor;
             document.getElementById('endColorPreview').style.backgroundColor = endColor;
+
+            // Update color pickers to match
+            startColorPicker.value = startColor;
+            endColorPicker.value = endColor;
 
             colorCodes.textContent = `${startColor}, ${endColor}`;
             glowValue.textContent = `${glowIntensity}px`;
@@ -574,21 +643,7 @@
             }
         }
 
-        // Initialize with proper mobile detection
-        function init() {
-            updatePreview();
-            
-            // Add touch events for better mobile interaction
-            glowSlider.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-            });
-            
-            glowSlider.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                updatePreview();
-            });
-        }
-
+        // EVENT LISTENERS
         startColorHex.addEventListener('input', function() {
             startColorHex.value = startColorHex.value.toUpperCase().replace(/[^A-F0-9]/g, '');
             if (isValidHex(startColorHex.value)) {
@@ -618,6 +673,10 @@
         displayTextInput.addEventListener('input', updatePreview);
         glowSlider.addEventListener('input', updatePreview);
 
+        // QUICK ACTIONS EVENT LISTENERS
+        randomBtn.addEventListener('click', randomizeColors);
+        swapBtn.addEventListener('click', swapColors);
+
         copyBtn.addEventListener('click', function() {
             const colors = `#${startColorHex.value}, #${endColorHex.value}`;
             navigator.clipboard.writeText(colors).then(() => {
@@ -631,9 +690,7 @@
             });
         });
 
-        // Initialize on load
-        window.addEventListener('load', init);
-        window.addEventListener('resize', updatePreview);
+        updatePreview();
     </script>
 </body>
 </html>
