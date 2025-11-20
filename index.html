@@ -70,7 +70,6 @@
             font-weight: bold;
             color: white;
             font-size: 18px;
-            /* Wave animation removed from header logo */
         }
         
         h1 {
@@ -289,6 +288,7 @@
             text-align: center;
             margin-bottom: 24px;
             position: relative;
+            overflow: hidden;
         }
         
         .preview-text {
@@ -305,6 +305,8 @@
             text-rendering: optimizeLegibility;
             position: relative;
             z-index: 2;
+            /* Improved mobile compatibility */
+            -webkit-text-fill-color: transparent;
         }
         
         .glow-effect {
@@ -321,6 +323,10 @@
             pointer-events: none;
             opacity: 0;
             transition: all 0.3s ease;
+            /* Improved mobile compatibility */
+            -webkit-text-fill-color: transparent;
+            width: 100%;
+            text-align: center;
         }
 
         .glow-controls {
@@ -351,6 +357,25 @@
             outline: none;
         }
 
+        .glow-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--discord-primary);
+            cursor: pointer;
+        }
+
+        .glow-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--discord-primary);
+            cursor: pointer;
+            border: none;
+        }
+
         .instructions {
             background-color: var(--discord-dark);
             border-radius: 8px;
@@ -372,6 +397,32 @@
         @media (max-width: 768px) {
             .color-section {
                 grid-template-columns: 1fr;
+            }
+            
+            .preview-text {
+                font-size: 1.5rem;
+            }
+            
+            .glow-effect {
+                font-size: 1.5rem;
+            }
+            
+            .preview-container {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .preview-text {
+                font-size: 1.3rem;
+            }
+            
+            .glow-effect {
+                font-size: 1.3rem;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
             }
         }
     </style>
@@ -509,13 +560,33 @@
             glowEffect.textContent = '@' + text;
             glowEffect.style.backgroundImage = gradient;
 
+            // Improved mobile compatibility for glow effect
             if (glowIntensity > 0) {
                 glowEffect.style.filter = `blur(${glowIntensity}px)`;
+                glowEffect.style.webkitFilter = `blur(${glowIntensity}px)`;
                 glowEffect.style.opacity = '0.7';
+                glowEffect.style.transform = 'translate(-50%, -50%) scale(1.05)';
             } else {
                 glowEffect.style.filter = 'blur(0px)';
+                glowEffect.style.webkitFilter = 'blur(0px)';
                 glowEffect.style.opacity = '0';
+                glowEffect.style.transform = 'translate(-50%, -50%) scale(1)';
             }
+        }
+
+        // Initialize with proper mobile detection
+        function init() {
+            updatePreview();
+            
+            // Add touch events for better mobile interaction
+            glowSlider.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            });
+            
+            glowSlider.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                updatePreview();
+            });
         }
 
         startColorHex.addEventListener('input', function() {
@@ -560,7 +631,9 @@
             });
         });
 
-        updatePreview();
+        // Initialize on load
+        window.addEventListener('load', init);
+        window.addEventListener('resize', updatePreview);
     </script>
 </body>
 </html>
