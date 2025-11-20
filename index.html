@@ -118,9 +118,16 @@
             border-color: var(--discord-primary);
             box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.3);
         }
-        
-        .text-input:focus + .text-prefix {
-            color: var(--discord-primary);
+
+        /* 🔥 ENHANCED ANIMATED WAVE EFFECT */
+        .gradient-wave {
+            animation: waveMove 2s linear infinite;
+            background-size: 150% 100% !important;
+        }
+
+        @keyframes waveMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: -150% 0%; }
         }
         
         .color-section {
@@ -181,10 +188,6 @@
         .hex-input:focus {
             border-color: var(--discord-primary);
             box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2);
-        }
-        
-        .hex-input:focus + .hex-prefix {
-            color: var(--discord-primary);
         }
         
         .color-preview {
@@ -276,7 +279,6 @@
             display: inline-block;
             padding: 8px 16px;
             transition: all 0.3s ease;
-            background-size: 100% 100%;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -299,7 +301,7 @@
             opacity: 0;
             transition: all 0.3s ease;
         }
-        
+
         .glow-controls {
             display: flex;
             flex-direction: column;
@@ -327,37 +329,7 @@
             background: var(--discord-dark);
             outline: none;
         }
-        
-        .glow-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--discord-primary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .glow-slider::-webkit-slider-thumb:hover {
-            background: #4752c4;
-            transform: scale(1.1);
-        }
-        
-        .glow-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--discord-primary);
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        .glow-slider::-moz-range-thumb:hover {
-            background: #4752c4;
-            transform: scale(1.1);
-        }
-        
+
         .instructions {
             background-color: var(--discord-dark);
             border-radius: 8px;
@@ -376,41 +348,9 @@
             line-height: 1.6;
         }
         
-        .glow-description {
-            color: var(--discord-text-secondary);
-            font-size: 0.9rem;
-            margin-top: 8px;
-        }
-        
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .color-section {
                 grid-template-columns: 1fr;
-            }
-            
-            .preview-text, .glow-effect {
-                font-size: 1.5rem;
-            }
-            
-            .copy-section {
-                flex-direction: column;
-                gap: 16px;
-                align-items: flex-start;
-            }
-            
-            .copy-btn {
-                align-self: stretch;
-                justify-content: center;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .content {
-                padding: 16px;
-            }
-            
-            .preview-text, .glow-effect {
-                font-size: 1.3rem;
             }
         }
     </style>
@@ -436,7 +376,7 @@
                     <div class="color-input-group">
                         <div class="hex-input-group">
                             <span class="hex-prefix">#</span>
-                            <input type="text" id="startColorHex" class="hex-input" value="5865f2" maxlength="6" placeholder="5865f2">
+                            <input type="text" id="startColorHex" class="hex-input" value="5865f2" maxlength="6">
                         </div>
                         <div id="startColorPreview" class="color-preview" style="background-color: #5865f2;">
                             <input type="color" id="startColorPicker" class="color-picker-input" value="#5865f2">
@@ -449,17 +389,17 @@
                     <div class="color-input-group">
                         <div class="hex-input-group">
                             <span class="hex-prefix">#</span>
-                            <input type="text" id="endColorHex" class="hex-input" value="7289DA" maxlength="6" placeholder="7289DA">
+                            <input type="text" id="endColorHex" class="hex-input" value="57F287" maxlength="6">
                         </div>
-                        <div id="endColorPreview" class="color-preview" style="background-color: #7289DA;">
-                            <input type="color" id="endColorPicker" class="color-picker-input" value="#7289DA">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #57F287;">
+                            <input type="color" id="endColorPicker" class="color-picker-input" value="#57F287">
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="copy-section">
-                <div class="color-codes" id="colorCodes">#5865f2, #7289DA</div>
+                <div class="color-codes" id="colorCodes">#5865f2, #57F287</div>
                 <button id="copyBtn" class="copy-btn">
                     <i class="fas fa-copy"></i> Copy Colors
                 </button>
@@ -470,8 +410,8 @@
             <div class="section">
                 <h2 class="section-title"><i class="fas fa-eye"></i> Preview</h2>
                 <div class="preview-container">
-                    <div id="previewText" class="preview-text">@Display Name</div>
-                    <div id="glowEffect" class="glow-effect">@Display Name</div>
+                    <div id="previewText" class="preview-text gradient-wave">@Display Name</div>
+                    <div id="glowEffect" class="glow-effect gradient-wave">@Display Name</div>
                 </div>
                 
                 <h3 class="section-title"><i class="fas fa-lightbulb"></i> Glow Intensity</h3>
@@ -480,26 +420,22 @@
                         <span class="slider-value" id="glowValue">0px</span>
                         <input type="range" min="0" max="20" value="0" class="glow-slider" id="glowSlider">
                     </div>
-                    <p class="glow-description">
-                        Adjust the glow intensity using the slider
-                    </p>
                 </div>
             </div>
             
             <div class="instructions">
                 <h2 class="section-title"><i class="fas fa-info-circle"></i> How to Use</h2>
                 <ol>
-                    <li>Enter the text you want to preview in the text field.</li>
-                    <li>Choose two colors using the hex inputs or the color picker buttons.</li>
-                    <li>Adjust the glow intensity to your preference using the slider.</li>
-                    <li>Copy the hex codes and use them in your Discord role settings.</li>
+                    <li>Enter the text you want to preview.</li>
+                    <li>Pick two colors using hex or color picker.</li>
+                    <li>Adjust glow intensity.</li>
+                    <li>Copy the hex codes.</li>
                 </ol>
             </div>
         </div>
     </div>
 
     <script>
-        // DOM elements
         const displayTextInput = document.getElementById('displayText');
         const startColorHex = document.getElementById('startColorHex');
         const startColorPicker = document.getElementById('startColorPicker');
@@ -510,50 +446,43 @@
         const previewText = document.getElementById('previewText');
         const glowEffect = document.getElementById('glowEffect');
         const glowSlider = document.getElementById('glowSlider');
+		glowSlider.value = 10;
         const glowValue = document.getElementById('glowValue');
-        
-        // Validate hex color
+
         function isValidHex(color) {
             return /^[A-Fa-f0-9]{6}$/.test(color);
         }
-        
-        // Update preview when inputs change
+
         function updatePreview() {
             const text = displayTextInput.value || 'Display Name';
             const startColorValue = startColorHex.value;
             const endColorValue = endColorHex.value;
             const glowIntensity = glowSlider.value;
             
-            // Create full hex colors with #
             const startColor = '#' + startColorValue;
             const endColor = '#' + endColorValue;
             
-            // Update color previews
             document.getElementById('startColorPreview').style.backgroundColor = startColor;
             document.getElementById('endColorPreview').style.backgroundColor = endColor;
-            
-            // Update color codes display
+
             colorCodes.textContent = `${startColor}, ${endColor}`;
-            
-            // Update glow value display
             glowValue.textContent = `${glowIntensity}px`;
-            
-            // Create gradient background
-            const gradient = `linear-gradient(90deg, ${startColor}, ${endColor})`;
-            
-            // Apply styles to preview text (add @ prefix for display)
+
+            // Enhanced gradient with 5 stops for smoother animation
+            const gradient = `linear-gradient(90deg,
+                ${startColor} 0%,
+                ${endColor} 25%,
+                ${startColor} 50%,
+                ${endColor} 75%,
+                ${startColor} 100%
+            )`;
+
             previewText.textContent = '@' + text;
             previewText.style.backgroundImage = gradient;
-            previewText.style.backgroundSize = '100% 100%';
-            
-            // Apply styles to glow effect (add @ prefix for display)
+
             glowEffect.textContent = '@' + text;
             glowEffect.style.backgroundImage = gradient;
-            glowEffect.style.backgroundSize = '100% 100%';
-            glowEffect.style.fontSize = previewText.style.fontSize;
-            glowEffect.style.fontWeight = previewText.style.fontWeight;
-            
-            // Apply glow effect using filter and opacity
+
             if (glowIntensity > 0) {
                 glowEffect.style.filter = `blur(${glowIntensity}px)`;
                 glowEffect.style.opacity = '0.7';
@@ -562,51 +491,39 @@
                 glowEffect.style.opacity = '0';
             }
         }
-        
-        // Sync color inputs and pickers
+
         startColorHex.addEventListener('input', function() {
-            // Convert to uppercase and remove any non-hex characters
             startColorHex.value = startColorHex.value.toUpperCase().replace(/[^A-F0-9]/g, '');
-            
             if (isValidHex(startColorHex.value)) {
                 startColorPicker.value = '#' + startColorHex.value;
                 updatePreview();
             }
         });
-        
+
         startColorPicker.addEventListener('input', function() {
-            // Remove # from the color value
             startColorHex.value = startColorPicker.value.substring(1).toUpperCase();
             updatePreview();
         });
-        
+
         endColorHex.addEventListener('input', function() {
-            // Convert to uppercase and remove any non-hex characters
             endColorHex.value = endColorHex.value.toUpperCase().replace(/[^A-F0-9]/g, '');
-            
             if (isValidHex(endColorHex.value)) {
                 endColorPicker.value = '#' + endColorHex.value;
                 updatePreview();
             }
         });
-        
+
         endColorPicker.addEventListener('input', function() {
-            // Remove # from the color value
             endColorHex.value = endColorPicker.value.substring(1).toUpperCase();
             updatePreview();
         });
-        
-        // Update preview when text changes
+
         displayTextInput.addEventListener('input', updatePreview);
-        
-        // Update preview when glow slider changes
         glowSlider.addEventListener('input', updatePreview);
-        
-        // Copy colors to clipboard
+
         copyBtn.addEventListener('click', function() {
             const colors = `#${startColorHex.value}, #${endColorHex.value}`;
             navigator.clipboard.writeText(colors).then(() => {
-                // Show feedback
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
                 copyBtn.classList.add('copied');
                 
@@ -614,17 +531,9 @@
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Colors';
                     copyBtn.classList.remove('copied');
                 }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
-                
-                setTimeout(() => {
-                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Colors';
-                }, 2000);
             });
         });
-        
-        // Initialize preview
+
         updatePreview();
     </script>
 </body>
