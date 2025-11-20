@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Gradient Tester</title>
+    
+    <!-- Dynamic SVG LOGO AS FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM1ODY1ZjIiLz4KICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNTdGMjg3Ii8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjE4IiBmaWxsPSJ1cmwoI2dyYWQpIi8+CiAgICA8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HPC90ZXh0Pgo8L3N2Zz4K">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -50,6 +54,23 @@
             background-color: var(--discord-dark);
             padding: 20px 24px;
             border-bottom: 1px solid var(--discord-border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #5865f2, #7289DA);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+            /* Wave animation removed from header logo */
         }
         
         h1 {
@@ -119,15 +140,15 @@
             box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.3);
         }
 
-        /* 🔥 ENHANCED ANIMATED WAVE EFFECT */
+        /* ENHANCED ANIMATED WAVE EFFECT - Only for preview text */
         .gradient-wave {
-            animation: waveMove 2s linear infinite;
-            background-size: 150% 100% !important;
+            animation: waveMove 3s linear infinite;
+            background-size: 200% 100% !important;
         }
 
         @keyframes waveMove {
             0% { background-position: 0% 0%; }
-            100% { background-position: -150% 0%; }
+            100% { background-position: -200% 0%; }
         }
         
         .color-section {
@@ -358,6 +379,8 @@
 <body>
     <div class="container">
         <div class="header">
+            <!-- STATIC CIRCULAR LOGO (No wave animation) -->
+            <div id="headerLogo" class="header-logo">G</div>
             <h1><i class="fab fa-discord"></i> Discord Gradient Tester</h1>
         </div>
         
@@ -389,17 +412,17 @@
                     <div class="color-input-group">
                         <div class="hex-input-group">
                             <span class="hex-prefix">#</span>
-                            <input type="text" id="endColorHex" class="hex-input" value="57F287" maxlength="6">
+                            <input type="text" id="endColorHex" class="hex-input" value="7289DA" maxlength="6">
                         </div>
-                        <div id="endColorPreview" class="color-preview" style="background-color: #57F287;">
-                            <input type="color" id="endColorPicker" class="color-picker-input" value="#57F287">
+                        <div id="endColorPreview" class="color-preview" style="background-color: #7289DA;">
+                            <input type="color" id="endColorPicker" class="color-picker-input" value="#7289DA">
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="copy-section">
-                <div class="color-codes" id="colorCodes">#5865f2, #57F287</div>
+                <div class="color-codes" id="colorCodes">#5865f2, #7289DA</div>
                 <button id="copyBtn" class="copy-btn">
                     <i class="fas fa-copy"></i> Copy Colors
                 </button>
@@ -417,8 +440,8 @@
                 <h3 class="section-title"><i class="fas fa-lightbulb"></i> Glow Intensity</h3>
                 <div class="glow-controls">
                     <div class="slider-container">
-                        <span class="slider-value" id="glowValue">0px</span>
-                        <input type="range" min="0" max="20" value="0" class="glow-slider" id="glowSlider">
+                        <span class="slider-value" id="glowValue">8px</span>
+                        <input type="range" min="0" max="20" value="8" class="glow-slider" id="glowSlider">
                     </div>
                 </div>
             </div>
@@ -446,8 +469,8 @@
         const previewText = document.getElementById('previewText');
         const glowEffect = document.getElementById('glowEffect');
         const glowSlider = document.getElementById('glowSlider');
-		glowSlider.value = 10;
         const glowValue = document.getElementById('glowValue');
+        const headerLogo = document.getElementById('headerLogo');
 
         function isValidHex(color) {
             return /^[A-Fa-f0-9]{6}$/.test(color);
@@ -476,6 +499,9 @@
                 ${endColor} 75%,
                 ${startColor} 100%
             )`;
+
+            // Update header logo gradient (static, no animation)
+            headerLogo.style.backgroundImage = gradient;
 
             previewText.textContent = '@' + text;
             previewText.style.backgroundImage = gradient;
